@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>test group chat now yes.</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins";
+      }
+
+      .container {
+        /* margin-top: 100px; */
+        margin: 60px auto 20px;
+        max-width: 1000px;
+        background: #fff;
+        /* box-shadow: 1px 6px 15px rgba(0, 0, 0, 0.1); */
+        padding: 0px 20px;
+        border: 1px solid #eee;
+        max-height: calc(100vh - 140px);
+      }
+
+      .header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: lightseagreen;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+      }
+      .header h3 {
+        color: #fff;
+      }
+      form {
+        position: fixed;
+        left: 0px;
+        right: 0px;
+        bottom: 0px;
+        height: 70px;
+        width: calc(100%);
+        overflow: hidden;
+        z-index: 14;
+        background-color: #fff;
+        padding: 12px;
+        box-shadow: 1px 6px 15px rgba(0, 0, 0, 0.1);
+      }
+      textarea {
+        position: absolute;
+        left: 0;
+        bottom: 9px;
+        right: 5px;
+        width: calc(100% - 10px);
+        height: 50px;
+        border: none;
+        padding: 10px 80px 10px 10px;
+      }
+
+      textarea:focus {
+        outline: none;
+      }
+      button {
+        position: absolute;
+        right: 15px;
+        bottom: 14px;
+        padding: 0.7rem 2rem;
+        color: #fff;
+        font-weight: bold;
+        letter-spacing: 1px;
+        border-radius: 5px;
+        background: lightseagreen;
+        outline: none;
+        border: none;
+
+        cursor: pointer;
+      }
+
+      .messageContainer {
+        max-height: calc(100vh - 140px);
+        overflow-y: scroll;
+      }
+      .menuIcon {
+        padding: 4px;
+        cursor: pointer;
+        margin-right: 10px;
+      }
+      .menuIcon > div {
+        height: 2px;
+        width: 22px;
+        background: #fff;
+        border-radius: 10px;
+        margin-bottom: 4px;
+      }
+      .sidebar-wrapper {
+        position: fixed;
+        top: 0;
+        left: -101%;
+        width: 250px;
+        background: #fff;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        height: 100vh;
+        z-index: 15;
+        transition: all 0.3s ease-in-out;
+      }
+      .sidebar-wrapper .sidebar {
+        padding: 15px;
+      }
+      .sidebar ul {
+        list-style-type: none;
+        list-style-position: inside;
+        margin: 0;
+      }
+
+      .sidebar ul li a {
+        display: inline-block;
+        color: #666;
+        text-decoration: none;
+        padding: 0.4rem;
+      }
+      .sidebar h4 {
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+        margin-top: 20px;
+      }
+      .sidebar .cross {
+        position: absolute;
+        right: 20px;
+        top: 10px;
+        cursor: pointer;
+        color: #555;
+        font-weight: bold;
+        font-size: 20px;
+      }
+      .sidebar ul li a span {
+        display: inline-block;
+        margin-left: 8px;
+        height: 8px;
+        width: 8px;
+        border-radius: 50%;
+        background: lightgreen;
+      }
+
+      .menuOpen {
+        left: 0 !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div class="menuIcon">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <h3 style="font-size: 15px">
+          Chait >>
+          <script>
+            document.write(new Date().toDateString());
+          </script>
+        </h3>
+      </div>
+      <div class="sidebar-wrapper">
+        <div class="sidebar">
+          <h4>Active Users</h4>
+          <div class="cross">&times;</div>
+          <ul id="actives"></ul>
+        </div>
+      </div>
+      <style>
+        .messageContainer {
+          padding: 10px 10px 25px;
+        }
+        .otherMessage,
+        .myMessage {
+          position: relative;
+          max-width: 85%;
+          width: 85%;
+          margin: 3px 0;
+        }
+        .otherMessage {
+          float: left;
+        }
+        .otherMessage .name {
+          font-size: 11px;
+          color: #888;
+          position: absolute;
+          top: 0;
+          text-transform: capitalize;
+          margin-left: 5px;
+        }
+        .otherMessage .message {
+          padding: 12px;
+          border-radius: 25px;
+          background: rgb(245, 245, 245);
+          display: inline-block;
+          margin-top: 18px;
+        }
+        .myMessage {
+          float: right;
+        }
+
+        .myMessage .message {
+          padding: 12px;
+          border-radius: 25px;
+          background: rgb(46, 240, 104);
+          color: #fff;
+          margin-top: 18px;
+          float: right;
+        }
+        .lmsg {
+          display: block;
+          width: 100%;
+          color: red;
+          margin: 5px 0px;
+          float: left;
+          font-size: 14px;
+          font-style: italic;
+        }
+        .jmsg {
+          display: block;
+          width: 100%;
+          color: lightseagreen;
+          margin: 5px 0px;
+          float: left;
+          font-size: 14px;
+          font-style: italic;
+        }
+
+        .time {
+          position: fixed;
+          top: 17px;
+          right: 20px;
+          color: #fff;
+        }
+        @media (max-width: 768px) {
+          .container {
+            padding: 10px;
+          }
+        }
+      </style>
+
+      <div class="messageContainer">
+        <div style="text-align: center; font-size: 10px; font-style: italic">
+          This app is made by nir mgr 💚
+        </div>
+        <div class="otherMessage">
+          <p class="name">chat bot</p>
+          <p class="message">Hi, welcome to chattt app</p>
+        </div>
+        <!-- <div class="jmsg">ram just joined a chat.</div>
+        <div class="lmsg">ram left a chat.</div> -->
+      </div>
+
+      <form action="">
+        <textarea
+          name="message"
+          id="message"
+          placeholder="enter your message..."
+        ></textarea>
+        <button type="submit" id="submit">Send</button>
+      </form>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", function () {
+        let name = prompt("Enter your name to enter.");
+        if (name == "undefined" || name == null || name == "") {
+          window.location.reload();
+        } else {
+          var socket = io();
+          window.socketid;
+          let joinedMusic = new Audio();
+          let messageAyoMusic = new Audio();
+          joinedMusic.src = "/userjoined.mp3";
+          messageAyoMusic.src = "/message.mp3";
+          let msg = document.getElementById("message");
+          msg.addEventListener("focus", function () {
+            socket.emit("typing", "");
+          });
+          var form = document.querySelector("form");
+          form.addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            if (msg.value.trim() != "") {
+              socket.emit("sendmessage", msg.value, name, socketid);
+              msg.value = "";
+            } else {
+              alert("please enter a message");
+            }
+          });
+
+          //set mentu ic
+          let messageContainer = document.querySelector(".messageContainer");
+          let menuIcon = document.querySelector(".menuIcon");
+          let sidebar_wrapper = document.querySelector(".sidebar-wrapper");
+          let cross = document.querySelector(".cross");
+          const toggleMenu = (e) => {
+            sidebar_wrapper.classList.toggle("menuOpen");
+          };
+          menuIcon.addEventListener("click", toggleMenu);
+          cross.addEventListener("click", toggleMenu);
+
+          function scrollDown() {
+            let sh = messageContainer.scrollHeight;
+            messageContainer.scrollBy(0, sh);
+          }
+          //set initial active users
+          document.querySelector("#actives").innerHTML = `<li>
+              <a href="javascript:void(0)"> ${name} <span> </span> </a>
+            </li>`;
+          //yes now login make it and start session
+          socket.on("signin", function (id) {
+            window.socketid = id;
+            //add new user to the active session in server
+            socket.emit("addnewUser", socketid, name);
+            //after that  show new user joined the chat .
+          });
+          //emit returned name
+          socket.on("userjoined", function (na) {
+            showJoinedMessage(na);
+            joinedMusic.currentTime = 0;
+            joinedMusic.play();
+          });
+
+          //socket on actives
+          socket.on("actives", function (actives) {
+            let activeId = document.querySelector("#actives");
+            let htm = ` `;
+            actives.forEach((element) => {
+              htm += `
+              <li>
+              <a href="javascript:void(0)"> ${element} <span> </span> </a>
+            </li>
+              `;
+            });
+            activeId.innerHTML = htm;
+          });
+          //receiving features
+          socket.on("aayo", (name, message, id) => {
+            let div = document.createElement("div");
+            let c = socketid == id ? "myMessage" : "otherMessage";
+            div.classList.add(c);
+            div.innerHTML =
+              socketid == id
+                ? `<p class="message">${message}</p>`
+                : `<p class="name">${name}</p>
+          <p class="message">${message}</p>`;
+            messageContainer.appendChild(div);
+            // document.querySelector(".typing").textContent = "";
+            if (socketid != id) {
+              messageAyoMusic.currentTime = 0;
+              messageAyoMusic.volume = 0.5;
+              messageAyoMusic.play();
+            }
+            scrollDown();
+          });
+
+          socket.on("userleft", (name) => {
+            showLeaveMessage(name);
+          });
+
+          scrollDown();
+        }
+        showTime();
+
+        setInterval(() => {
+          updateTime();
+        }, 1000);
+      });
+
+      function setSocketid(id) {
+        socketid = id;
+        //after socket id and name set successful add name just joined a chat ..
+      }
+
+      //functyion to show joined message
+      function showJoinedMessage(naam) {
+        let htm = document.createElement("div");
+        htm.classList.add("jmsg");
+        htm.innerText = `${naam} just joined a chat.`;
+        document.querySelector(".messageContainer").appendChild(htm);
+      }
+
+      function showLeaveMessage(nnn) {
+        let htm = document.createElement("div");
+        htm.classList.add("lmsg");
+        htm.innerText = `${nnn} just left a chat.`;
+        document.querySelector(".messageContainer").appendChild(htm);
+      }
+
+      function showTime() {
+        let tdiv = document.createElement("div");
+        tdiv.classList.add("time");
+        document.body.appendChild(tdiv);
+        updateTime();
+      }
+
+      function updateTime() {
+        let date = new Date();
+        let time =
+          date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+        document.querySelector(".time").innerText = time;
+      }
+
+      // socket.on("typed", function (msg) {
+      //   document.querySelector(".typing").textContent = msg;
+      // });
+    </script>
+  </body>
+</html>

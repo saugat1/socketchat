@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>sene massage page</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Poppins";
+      }
+
+      .container {
+        /* margin-top: 100px; */
+        margin: 100px auto 20px;
+        max-width: 1000px;
+        background: #fff;
+        box-shadow: 1px 6px 15px rgba(0, 0, 0, 0.1);
+        padding: 40px;
+      }
+      .message {
+        padding: 0.3rem 1rem;
+        color: #888;
+        background: #eee;
+        margin-top: 3px;
+        display: inline-block;
+        border-radius: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1 style="margin-bottom: 20px">Messages.</h1>
+      <div class="m">
+        <div class="message">hello</div>
+      </div>
+      <div class="typing" style="margin-top: 20px">sadf</div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      socket.on("aayo", (message) => {
+        let div = document.createElement("div");
+        div.classList.add("message");
+        div.innerText = message;
+        document.querySelector(".m").appendChild(div);
+        document.querySelector(".typing").textContent = "";
+      });
+
+      socket.on("typed", function (msg) {
+        console.log(msg);
+        document.querySelector(".typing").textContent = msg;
+      });
+    </script>
+  </body>
+</html>
